@@ -24,6 +24,7 @@ from geometry_msgs.msg import PoseStamped, Pose, Point, Twist, TwistStamped
 import math
 from time import sleep
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
+import pickle
 
 # p=[x,y,z]T position
 # η = [φ, θ, ψ]T euler angles
@@ -144,13 +145,15 @@ class Drone:
 	global v = np.array([self.X[6], self.X[7], self.X[9]]
 
 class SMCController:
+	pickle_off = open("datafile.txt","rb")
+	X = pickle.load(pickle_off)
+
 	mass = 1
 	a1 = 1
 	a2 = 1
 	b = 1
 	dp = np.diag(1,1,1) #drag coefficients
 	f2 = -(1/mass)*dp*v
-
     
 	def s0_calc(self):
 		dt = 0.1
@@ -169,18 +172,8 @@ class SMCController:
 		global E_cap = E_calc() + b*sign(s0_calc())
 		return E_cap 
 
-	def mod_E_calc_cap():
-		mod_E_cap = numpy.mod(E_calc_cap)
-
-	global phi_d = arcsin((E_cap[0]*sin(roll)-E_cap[1]*cos(roll))/mod_E_calc_cap())
-	global theta_d = arctan((E_cap[0]*cos(roll)+E_cap[1]*sin(roll))/E_cap[2])
-
-
-	def thrust_input():
-		u = np.array(cos(phi_d)*cos(roll)*sin(theta_d)+sin(roll)*sin(phi_d)
-			, sin(theta_d)*sin(roll)*sin(phi_d) - cos(roll)*sin(phi_d)
-			, cos(phi_d)*cos(roll))*E_calc_cap
-		return u
-
 
 #just publish u now to ROS using setpoint_accel
+
+if __init__ = main :
+	self.pub = rospy.Publisher('/mavros/setpoint_acc/accel', NavSatFix, self.global_pose)
